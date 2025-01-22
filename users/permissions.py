@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 
 class IsOwner(BasePermission):
@@ -11,3 +11,11 @@ class IsOwner(BasePermission):
         if obj.owner == request.user:
             return True
         return False
+
+
+class IsManagerOrAdmin(IsAuthenticated):
+    """Доступ только для менеджеров или администраторов."""
+    def has_permission(self, request, view):
+        return super().has_permission(request, view) and (
+            request.user.is_superuser or isinstance(request.user, Manager)
+        )

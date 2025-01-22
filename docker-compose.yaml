@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_cache
+    restart: on-failure
+    expose:
+      - "6379"
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: on-failure
+    env_file:
+      - .env
+    expose:
+      - "5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "-c", "pg_isready -U $POSTGRES_USER"]
+      interval: 10s
+      retries: 5
+      timeout: 5s
+
+  app:
+    build: .
+    container_name: django_app
+    tty: true
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /var/www/html/task_tracker/static:/app/static
+    env_file:
+      - .env
+
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    volumes:
+      - /var/www/html/task_tracker/static:/app/static
+
+volumes:
+  pg_data:
+  static_volume:

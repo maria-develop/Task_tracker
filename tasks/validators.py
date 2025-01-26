@@ -2,18 +2,6 @@ import re
 from rest_framework.serializers import ValidationError
 
 
-def validate_manager_can_create_task(owner):
-    """Проверка: только менеджер может создавать задачи."""
-    if not getattr(owner, "is_manager", False):
-        raise ValidationError("Только менеджер может создавать задачи.")
-
-
-def validate_manager_cannot_assign_to_self(owner, employee):
-    """Проверка: менеджер не может назначить задачу самому себе."""
-    if owner == employee:
-        raise ValidationError("Менеджер не может назначить задачу самому себе.")
-
-
 def validate_mark_as_done(user, status):
     """Проверка: только менеджер может завершить задачу, если она в процессе выполнения."""
     if not getattr(user, "is_manager", False):

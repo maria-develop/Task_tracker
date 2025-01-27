@@ -74,9 +74,6 @@ class EmployeeSerializer(ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
-        # extra_kwargs = {
-        #     'password': {'write_only': True},  # Скрыть пароль в выводе
-        # }
 
 
 class TaskWithParentSerializer(ModelSerializer):

@@ -59,14 +59,6 @@ class ManagerActiveTasksListAPIView(ListAPIView):
         )
         return self.queryset
 
-    # def get_queryset(self):
-    #     self.queryset = Manager.objects.all()
-    #     self.queryset = self.queryset.select_related()
-    #     self.queryset = Manager.objects.annotate(tasks_count=Count("task")).order_by(
-    #         "-tasks_count"
-    #     )
-    #     return self.queryset
-
 
 class EmployeeListAPIView(ListAPIView):
     queryset = Employee.objects.all()
@@ -93,29 +85,6 @@ class EmployeeUpdateAPIView(UpdateAPIView):
     queryset = Employee.objects.all()
 
 
-# class EmployeeActiveTasksListAPIView(ListAPIView):
-#     queryset = Employee.objects.all()
-#     serializer_class = EmployeeActiveTasksSerializer
-#     filter_backends = [SearchFilter]
-#     search_fields = ["full_name"]
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         return (
-    #             Task.objects.filter(assigned_to=user)
-    #             .select_related("parent_task")  # Оптимизация связи с родительской задачей
-    #             .prefetch_related("sub_tasks")  # Предзагрузка подзадач
-    #         )
-    #     return Task.objects.none()
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         return Task.objects.filter(assigned_to=user)
-    #     return Task.objects.none()
-
-
 class BusyEmployeesListAPIView(ListAPIView):
     queryset = Employee.objects.prefetch_related("tasks")  # Загружаем связанные задачи
     serializer_class = EmployeeActiveTasksSerializer
@@ -135,12 +104,6 @@ class ParentTaskListAPIView(ListAPIView):
     queryset = ParentTask.objects.all()
     serializer_class = ParentTaskSerializer
     pagination_class = ParentTaskPageNumberPagination
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         return Task.objects.filter(assigned_to=user)
-    #     return Task.objects.none()
 
 
 class ParentTaskRetrieveAPIView(RetrieveAPIView):
@@ -172,12 +135,6 @@ class TaskListAPIView(ListAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     pagination_class = TaskPageNumberPagination
-
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     if user.is_authenticated:
-    #         return Task.objects.filter(assigned_to=user)
-    #     return Task.objects.none()
 
 
 class TaskRetrieveAPIView(RetrieveAPIView):

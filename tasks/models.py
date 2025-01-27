@@ -9,6 +9,7 @@ NULLABLE = {"null": True, "blank": True}
 
 class Manager(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, verbose_name="Почта")
+    username = None
     full_name = models.CharField(
         max_length=100,
         verbose_name="ФИО",

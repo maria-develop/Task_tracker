@@ -1,6 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from users.models import User
-from tasks.models import Manager, Employee
+from tasks.models import Manager
 
 
 class CustomAuthBackend(ModelBackend):

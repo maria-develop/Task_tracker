@@ -10,7 +10,7 @@ from rest_framework.filters import SearchFilter
 from .models import Task, ParentTask, Manager, Employee
 from .paginations import ParentTaskPageNumberPagination, TaskPageNumberPagination
 from .serializers import ParentTaskSerializer, TaskSerializer, ManagerSerializer, EmployeeSerializer, \
-    ManagerActiveTasksSerializer, EmployeeActiveTasksSerializer,  ImportantTaskSerializer
+    ManagerActiveTasksSerializer, EmployeeActiveTasksSerializer, ImportantTaskSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

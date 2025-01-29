@@ -14,5 +14,3 @@ class UserViewSet(ModelViewSet):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
-
-

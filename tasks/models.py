@@ -8,6 +8,20 @@ NULLABLE = {"null": True, "blank": True}
 
 
 class Manager(AbstractBaseUser, PermissionsMixin):
+    """Модель менеджера.
+
+        Обязвтельные поля:
+            email (EmailField): Уникальный email для входа в систему.
+            full_name (str): ФИО менеджера.
+            position (str): Должность.
+            department (str): Структурное подразделение.
+            vacation_status (bool): Статус отсутствия на рабочем месте.
+            is_active (bool): Активен ли аккаунт.
+            is_staff (bool): Является ли сотрудником.
+
+        Methods:
+            __str__: Возвращает строковое представление в формате "ФИО (подразделение)".
+        """
     email = models.EmailField(unique=True, verbose_name="Почта")
     username = None
     full_name = models.CharField(
@@ -47,6 +61,15 @@ class Manager(AbstractBaseUser, PermissionsMixin):
 
 
 class Employee(models.Model):
+    """Модель сотрудника-исполнителя задач.
+
+        Атрибуты:
+            email (EmailField): Уникальный email сотрудника.
+            full_name (str): ФИО сотрудника.
+            department (str): Отдел/тип занятости (самозанятый, ИП и т.д.).
+            manager (ForeignKey): Связанный менеджер.
+            is_active (bool): Активен ли сотрудник.
+        """
     email = models.EmailField(unique=True, verbose_name="Почта")
     full_name = models.CharField(
         max_length=100,
@@ -96,6 +119,20 @@ class Employee(models.Model):
 
 
 class ParentTask(models.Model):
+    """Родительская задача, объединяющая подзадачи.
+
+        Обязательные поля:
+            title (str): Название задачи.
+            start_date (date): Дата начала.
+            planned_end_date (date): Плановый срок выполнения.
+            is_active (bool): Активна ли задача.
+        Атрибуты не обязательны к заполнению:
+            end_date (date): Фактическая дата завершения.
+            manager (ForeignKey): Ответственный менеджер.
+            description (str): Описание задачи.
+            status (str): Статус выполнения (done/in_progress/not_started).
+
+        """
     STATUS_DONE = "done"
     STATUS_IN_PROGRESS = "in_progress"
     STATUS_NOT_STARTED = "not_started"
@@ -133,6 +170,20 @@ class ParentTask(models.Model):
 
 
 class Task(models.Model):
+    """Задача, назначенная исполнителю.
+
+        Атрибуты:
+            title (str): Название задачи.
+            parent_task (ForeignKey): Родительская задача.
+            employee (ForeignKey): Исполнитель.
+            limit_time (str): Срок выполнения в днях.
+            start_date (date): Дата начала.
+            end_date (date): Фактическая дата завершения.
+            status (str): Статус выполнения.
+            comments (str): Описание задачи.
+            is_active (bool): Признак активности задачи.
+            is_important (bool): Признак важности задачи.
+        """
     STATUS_DONE = "done"
     STATUS_IN_PROGRESS = "in_progress"
     STATUS_NOT_STARTED = "not_started"

@@ -6,6 +6,12 @@ from .validators import TitleValidator
 
 
 class ManagerSerializer(ModelSerializer):
+    """Сериализатор для модели Manager.
+
+        Обрабатывает:
+        - Создание/обновление с хешированием пароля
+        - Скрытие поля password в ответах
+        """
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         instance = self.Meta.model(**validated_data)
@@ -32,6 +38,10 @@ class ManagerSerializer(ModelSerializer):
 
 
 class ManagerActiveTasksSerializer(ModelSerializer):
+    """Сериализатор для отображения активных задач менеджера.
+            summ_active_tasks (int): Количество активных задач.
+            tasks (list[str]): Список названий активных задач.
+        """
     summ_active_tasks = SerializerMethodField()
     tasks = SerializerMethodField()
 
@@ -85,6 +95,10 @@ class TaskWithParentSerializer(ModelSerializer):
 
 
 class EmployeeActiveTasksSerializer(ModelSerializer):
+    """Сериализатор для отображения задач сотрудника.
+            summ_active_tasks (int): Количество активных задач.
+            tasks (list[dict]): Список задач с названием и родительской задачей.
+        """
     summ_active_tasks = SerializerMethodField()
     tasks = SerializerMethodField()  # Для кастомной логики отображения задач
 
@@ -142,7 +156,10 @@ class TaskSerializer(ModelSerializer):
 
 
 class BaseTaskSerializer(ModelSerializer):
-    """Базовый класс"""
+    """Базовый сериализатор для задач.
+        completion_days (int): Дней на выполнение (вычисляемое поле).
+        available_people (list[str]): Список подходящих исполнителей.
+    """
     completion_days = SerializerMethodField()
     available_people = SerializerMethodField()
 

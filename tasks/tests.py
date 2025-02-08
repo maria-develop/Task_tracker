@@ -30,6 +30,7 @@ class TaskTestCase(APITestCase):
         self.assertEqual(data["title"], self.task.title)
 
     def test_task_retrieve_unauthenticated(self):
+        self.client.logout()
         url = reverse("tasks:task_retrieve", args=(self.task.pk,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -94,3 +95,24 @@ class TaskTestCase(APITestCase):
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn(result, data["results"])
+
+
+class TaskTestRetrieveCase(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(email="test88@mail.ru")
+        self.employee = Employee.objects.create(
+            full_name="Ершов Г.Г.", department="Самозанятый"
+        )
+        self.task = Task.objects.create(
+            title="Раздел 2 ПД",
+            start_date="2024-12-30",
+            end_date="2025-02-20",
+            is_important=True,
+            employee=Employee.objects.get(pk=self.employee.id),
+        )
+
+    def test_task_retrieve_unauthenticated(self):
+        url = reverse("tasks:task_retrieve", args=(self.task.pk,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

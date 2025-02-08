@@ -45,12 +45,31 @@ class ManagerUpdateAPIView(UpdateAPIView):
 
 
 class ManagerActiveTasksListAPIView(ListAPIView):
+    """
+    API-представление для списка активных задач менеджеров.
+
+    Атрибуты:
+        queryset (QuerySet): Запрос к объектам всех менеджеров.
+        serializer_class: ManagerActiveTasksSerializer для сериализации задач менеджеров.
+        filter_backends (SearchFilter): Фильтр поиска, примененный.
+        search_fields (List[str]): Поля для поиска менеджера по полному имени.
+
+    Методы:
+        get_queryset(self): Получение запроса к менеджерам с аннотацией tasks_count.
+    """
     queryset = Manager.objects.all()
     serializer_class = ManagerActiveTasksSerializer
     filter_backends = [SearchFilter]
     search_fields = ["full_name"]
 
     def get_queryset(self):
+        """
+        Получение запроса к менеджерам с аннотацией tasks_count, предварительной загрузкой связанных задач и
+        сортировкой по tasks_count.
+
+        Возвращает:
+            QuerySet: QuerySet менеджеров с аннотацией tasks_count.
+        """
         self.queryset = (
             Manager.objects.annotate(tasks_count=Count("parent_tasks"))
             # .select_related("profile")  # Оптимизация связи с профилем
@@ -153,6 +172,11 @@ class TaskDestroyAPIView(DestroyAPIView):
 
 
 class ImportantTaskListAPIView(ListAPIView):
+    """API-endpoint для получения важных задач.
+        - Фильтрация задач с is_important=True
+        - Автоматический подбор исполнителей
+        - Пагинация результатов
+        """
     serializer_class = ImportantTaskSerializer
 
     def get(self, request, *args, **kwargs):
